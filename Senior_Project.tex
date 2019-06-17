@@ -1,0 +1,110 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+
+\title{Quantum Secure Encryption\ Hardware Implementation of Ring Learning With Errors}
+\date{June 14, 2019}
+\author{Anthony Fortner, Lahiru Perera, Vasanth Sadhasivan}
+
+\begin{document}
+
+\pagenumbering{gobble}
+\maketitle
+\newpage
+\pagenumbering{arabic}
+  
+\tableofcontents
+\newpage
+
+\section{Introduction}
+\subsection{Project Background}
+As the world become more dependent of technology the need to secure our data become a growing concern. Though there are numerous security algorithm that we use today, none are expected to be computationally robust against the processing power of quantum computers. Learning with errors (LWE) is different in the since that it is based on lattice cryptography, a method though to be more resistant to an attack due to its higher complexity. 
+\subsection{Potential Beneficiaries}
+With the growing need to secure data the possible applications for LWE are countless. The future of computing is widely thought to become dominated my quantum computers and LWE has the potential to become our primary means to secure data. This would allow alleviate one of the major concerns of quantum computers and assist in their adoption. 
+
+\section{Research \& Planning}
+\subsection{LWE Basics}
+\subsubsection{Private Key Generation}
+To generate the private key Alice simply needs to come up with a vector that is in the vector space of n integers modulo $q$ or $Z_q^n$
+\begin{equation*}
+	s \in Z_q^n
+\end{equation*}
+The vector elements are chosen uniformly at random
+$q \geq 2$, is a prime number between $n^2$ and $2n^2$
+
+\subsubsection{Public Key Generation}
+Initially Alice choose $m$ vectors from $Z_q^n$ uniformly and independently, let this set of vectors be set $A$
+\begin{equation*}
+A = a_1, a_2… a_m \in Z_q^n
+\end{equation*}
+
+Then she choose a random set of $m$ errors
+
+\begin{equation*}
+E = e_1, e_2… e_m \in Z_q^n
+\end{equation*}
+
+Error values are selected according to the distribution $\chi$
+\begin{equation*}
+m = (1+y)(n+1)log(q) 
+\end{equation*}
+for an arbitrary $y$
+
+
+\subsection{Why Ring LWE}
+
+\section{Prototype design}
+\subsection{Functions \& Features}
+\subsection{Challenges \& Revisions}
+\subsection{System Diagram}
+\subsection{Software Flow Chart}
+
+\section{Conclusions}
+\subsection{Current State}
+\subsection{Next Steps}
+
+\section{\LaTeX ref}
+
+	\begin{equation*}
+		1 + 2 = 3 
+	\end{equation*}
+	
+	\begin{equation*}
+		1 = 3 - 2
+	\end{equation*}
+	
+	\begin{align*}
+		1 + 2 &= 3\\
+		1 &= 3 - 2
+	\end{align*}
+
+	\begin{align*}
+		f(x) &= x^2\\
+		g(x) &= \frac{1}{x}\\
+		F(x) &= \int^a_b \frac{1}{3}x^3
+	\end{align*}
+
+	$\begin{matrix}
+		1 & 0\\
+		0 & 1
+	\end{matrix}$
+
+	$\left[
+	\begin{matrix}
+		1 & 0\\
+		0 & 1
+	\end{matrix}
+	\right]$
+
+	\begin{equation*}
+		\left(\frac{1}{\sqrt{x}}\right)
+	\end{equation*}
+
+Random citation \cite{DUMMY:1} embedded in text.
+
+\newpage
+
+\bibliography{test}
+\bibliographystyle{ieeetr}
+	
+\end{document}
