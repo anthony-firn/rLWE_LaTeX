@@ -54,14 +54,30 @@ for an arbitrary $y$
 \subsection{Why Ring LWE}
 
 \section{Prototype design}
-\subsection{Functions \& Features}
-\subsection{Challenges \& Revisions}
+\subsection{Other Components}
+\subsubsection{Gaussian Number Generator}
+This component is used primarily in the generation of terms for the polynomial’s coefficients. Our goal was to use develop an implementation that uses the Ziggurat algorithm. From our research we determined that this algorithm would give us the best results while not requiring too many additional resources to implement. 
+\subsubsection{NTT}
+The nonlinear fast Fourier Transform (NFT) is a critical component used in various parts of the encryption/decryption process. The primary use is to quickly perform the needed operations on the polynomials that hold the message to be encrypted/decrypted.
+\subsubsection{Control Unit}
+The control unit is the component that will enable and disable various subsystem depending on the state that the system is in. Many of the system are designed to be controlled asynchronously such as the loading of gaussian random numbers into memory. There for the control unit's functionality is extremely important in making sure that the needed tasks are done in the correct order and duration.
+\subsection{Core Functions}
+Our hardware implementation consists of two main functions, encryption, and decryption. 
+\subsubsection{Private Key Generation}
+\subsubsection{Encryption}
+\subsubsection{Decryption}
+\subsection{Additional Features}
+For the ease of debugging and usability we have implemented a few additional features: UART interface,
+\
+\subsection{Challenges \& Revisions }
 \subsection{System Diagram}
-\subsection{Software Flow Chart}
 
 \section{Conclusions}
-\subsection{Current State}
-\subsection{Next Steps}
+\subsection{Summary of Development}
+The majority of our time was initially spent researching about LWE and the various components that we would need to implement in order to successfully encrypt and decrypt a simple message. This initial step ended up taking much more time that we expected to complexity of the topics that was required to understand how and why the algorithm works the way it does. Once we had felt we had a good understanding of the topic we began coding an implementation in Python using the NumPy library which included many prewritten functions. This allowed us to confirm that our understanding of LWE was correct.
+With our python implementation in hand we begun to make an initial system design and determine what we components we would have to develop. After a bit of discussion, we decided that we would design all these components our self, this was a task that we again under estimated. Our reasoning for this was that we wanted to make our project’s completely open and flexible to future changes. Currently we have our initial system architecture completed as well as the various components. We have begun assembling the components and have done some rudimentary testing.
+\subsection{Remaining Work \& Future Development}
+The tasks that remain are mainly debugging and cleaning up of our implementation. With the various changes that we had to implement throughout the duration of our project we anticipate various bugs when all the components are put together. Once the system is assembled and base functionality is tested, we expect that the next step will be performing an analysis on the devices characteristics such as power consumption, speed of computations, etc. Finally, with that information in hand the system can be optimized and improved.
 
 \section{\LaTeX ref}
 
@@ -101,6 +117,7 @@ for an arbitrary $y$
 	\end{equation*}
 
 Random citation \cite{DUMMY:1} embedded in text.
+Other citations, here \cite{deClercq:2015:ESI:2755753.2755830} and here \cite{Gottert:2012:DHB:2413316.2413355}
 
 \newpage
 
