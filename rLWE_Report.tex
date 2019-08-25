@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{graphicx}
+\usepackage{url}
 \graphicspath{ {./images/} }
 \usepackage{amsmath}
 
@@ -21,7 +22,7 @@
 
 \section{Introduction}
 \subsection{Project Background}
-As the world becomes more dependent on technology, the need to secure our data becomes an ever-growing concern. With the advent of quantum computers becoming an increasing reality, we need to rethink fundamentally how we popularly handle public key encryption. Learning with errors (LWE) is a different in the sense that it doesn’t rely on the desecrate logarithm problem to derive its hardness, which is known to be able be solvable in polynomial time with a quantum computer using methods like Shor’s algorithm {cryptoeprint:2014:725}. The LWE algorithm is based on lattice cryptography and derives its hardness from the shortest vector problem {Regev:2005:LLE:1060590.1060603}. 
+As the world becomes more dependent on computer technologies, the need to secure our data becomes an ever-growing concern. With the advent of quantum computers becoming an increasing reality, we need to rethink fundamentally how we popularly handle public key encryption. There are many different approaches to handle this problem, but very few if any have architected a specific hardware acceleration system. The fundamental algorithm explored by our team, Learning With Errors (LWE), is different in the sense that it doesn’t rely on the discrete logarithm problem to derive its hardness, which is known to be solvable in polynomial time with a quantum computer using methods like Shor’s algorithm \cite{cryptoeprint:2014:725}. The LWE algorithm is based on lattice cryptography and derives its hardness from the shortest vector problem \cite{Regev:2005:LLE:1060590.1060603}. Unfortunately LWE as a base algorithm is too computationally expensive to be a feasible replacement for current encryption models and is more of a proof of concept for how data may be encrypted with lattices. To achieve a more computationally robust system rLWE is used, which ultimately utilizes a much smaller public key, and features potential optimizations with polynomial multiplication. 
 
 \subsection{Potential Beneficiaries}
 With the ever growing need to secure our data, the possible applications for LWE based encryption are countless. The future of computing is widely thought to become dominated by quantum computers, and LWE based encryption has the potential to become our primary means to secure data. Having a secure encryption method that is resilient to the computational complexity of quantum computers eliminates one of the significant concerns of this new technology. There is also potential risk that even without quantum computers now, large amounts of network traffic thought to be secure with RSA encryption could be stored in large data centers and decrypted when quantum computer q-bit count goes up enabling mass security compromises. Therefore, a form of encryption resilient against quantum computers needs to be practically implemented as soon as possible. 
@@ -66,7 +67,7 @@ If Bob wants to give Alice a message he first needs to select a subset S of the 
 His message is going to be a bit $x \in (0,1)$
 To encode his message he simply does this
 \begin{equation*}
-(a, b) = ((ΣAi in set S), (ΣBi in set S) + x/2)
+(a,b) \sum_{n=1}a_i, \sum_{n=1}b_i + \frac{x}{2}
 \end{equation*}
 
 \subsubsection{Decryption}
@@ -80,7 +81,7 @@ If it’s closer to 0 than $\frac{1}{2}$ it is a 0
 Else it’s a 1
 
 \subsection{Why Ring LWE}
-The primary reason we chose ring LWE (also known as LWE-Polynomial) versus the common alternative matrix LWE was due to speed, the size of the public and private key, and the ease of encrypiting a multibit message encoding {cryptoeprint:2012:230}. Looking at tests performed in other papers, we saw that the matrix-based approach could be twice as slow compared to ring LWE. Secondly, we determined that polynomial based computations would be theoretically simpler to implement in hardware. Section 3 of the paper titled, On the Design of Hardware Building Blocks for Modern Lattice-Based Encryption Schemes, has an excellent analysis of the two methods and was one of the primary resources we reference throughout the planning phase of the project.
+The primary reason we chose ring LWE (also known as LWE-Polynomial) versus the common alternative matrix LWE was due to speed, the size of the public and private key, and the ease of encrypiting a multibit message encoding \cite{cryptoeprint:2012:230}. Looking at tests performed in other papers, we saw that the matrix-based approach could be twice as slow compared to ring LWE. Secondly, we determined that polynomial based computations would be theoretically simpler to implement in hardware. Section 3 of the paper titled, On the Design of Hardware Building Blocks for Modern Lattice-Based Encryption Schemes, has an excellent analysis of the two methods and was one of the primary resources we reference throughout the planning phase of the project.
 \section{Prototype design}
 \subsection{Primary Components}
 \subsubsection{Gaussian Number Generator}
@@ -97,38 +98,7 @@ For the ease of debugging and usability, we have implemented a UART interface. T
 \subsection{Challenges \& Revisions }
 Our primary challenges came from the design of our three primary components: number theoretic transform (NTT), Gaussian Generator, and Control Unit. Primarily we had a difficult time coming up with the best method of linking the various components together. This indecision resulted in many revisions of the Control Unit as we originally started with a design that did not include one to having the control unit handle the various states that the system. Secondly, we went through various methods of generating and storing the Gaussian numbers. Initially, we had planned to generate these numbers in real time but quickly realized that this would cause significant delays due to our implementation of the selective reject algorithm. The primary source of the less than ideal generation time was due to the unoptimized implementation of the selective reject algorithm that we had written. We ultimately decided to make the number generation run independently from the rest of the process when the control unit raises a signal the number generation begins, and the resulting values get stored to a reserved chunk of memory.
 \subsection{System Diagram}
-\includegraphics[scale=0.18]{system_diagram}
-\\
-Serial RX/TX: This component allows the user to quickly enter in a message to encrypt as well as operation code for the desired result. Once the desired operation completes, the output is sent back via the serial TX and presented to the user. Additionally, we hope to implement various debugging modes to see the data at various points throughout the encryption and decryption process.
-\\
-\\*
-LF8R: This component generates pseudo-random numbers that follow the Gaussian distribution. This component is enabled by the control unit when random numbers are needed and then turned off once the number of random numbers desired completes into memory. This component implementation is due the time that number generation currently takes, therefore having the unit enabled and a bank of numbers filled eases the strain of generating numbers on by one during encryption/decryption. 
-\\
-\\*
-Read Counter: This component counts the number of valid outputs from the Serial RX unit and then relays that data to the Control unit to determine the end of user input.
-\\
-\\*
-Serial FIFO: This component is responsible for buffering a packing the data coming from the Serial RX unit from the 8bits to the 18bit signals that are used by our design. Before result can be sent back via the Serial TX, the FIFO unpacks the data from the 18bit to the 8bit signals.
-\\
-\\*
-Random Term Manager: This component takes the 8-bit values generated by LF8R and then output an 18-bit value as well as the memory address where the value is stored. This component is responsible for ensuring that all values stored to memory are not only valid but placed in the correct locations of memory.  
-\\
-\\*
-Memory: This component takes memory addresses and then return the data found at the location to be used by the other units down the line. Additionally, this component is responsible for writing new data to the memory location as well; the data written includes random numbers, arithmetic operation results, etc.
-\\
-\\*
-NTT Polynomial Multiplication:  This component performs an NTT on the input data and then performs a multiplication of the two input values. The result has the inverse NTT performed, and then the resulting value is output from the component to be saved to memory for later use. 
-\\
-\\*
-Polynomial Addition: This component performs addition on the two polynomials that are passed in and then outputs the result to be saved to memory for further computations.
-\\
-\\*
-Polynomial Subtraction: This component performs subtraction on the two polynomials that are passed in and then output the result to be saved to memory for further computations.
-\\
-\\*
-Control Unit: This component's sole responsibility is to accurately execute the needed steps to perform the needed operation as determined by the operation code read in from the serial UART. Since the system is designed where various subsystems can run independently, having the control unit accurately enable and disable these systems are critical. 
-\\
-\\*
+
 
 \section{Conclusions}
 \subsection{Summary of Development}
